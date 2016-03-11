@@ -3,6 +3,9 @@ serve git directory
 
 #### refs
 
+##### git
+https://git-scm.com/book/en/v2/Git-Internals-Plumbing-and-Porcelain
+
 ##### http server
 https://github.com/git/git/blob/master/http-backend.c
 
