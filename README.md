@@ -6,6 +6,8 @@ serve git directory
 ##### git
 https://git-scm.com/book/en/v2/Git-Internals-Plumbing-and-Porcelain
 
+https://gist.github.com/schacon/6092633
+
 ##### http server
 https://github.com/git/git/blob/master/http-backend.c
 
