@@ -26,23 +26,22 @@ func main() {
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
+var services = []Service{
+	{"GET", regexp.MustCompile("/(.+)/HEAD$"), getHead},
+	{"GET", regexp.MustCompile("/(.+)/info/refs$"), getInfoRefs},
+	{"GET", regexp.MustCompile("/(.+)/objects/info/alternates$"), getTextFile},
+	{"GET", regexp.MustCompile("/(.+)/objects/info/http-alternates$"), getTextFile},
+	{"GET", regexp.MustCompile("/(.+)/objects/info/packs$"), getInfoPacks},
+	{"GET", regexp.MustCompile("/(.+)/objects/[0-9a-f]{2}/[0-9a-f]{38}$"), getLooseObject},
+	{"GET", regexp.MustCompile("/(.+)/objects/pack/pack-[0-9a-f]{40}\\.pack$"), getPackFile},
+	{"GET", regexp.MustCompile("/(.+)/objects/pack/pack-[0-9a-f]{40}\\.idx$"), getIdxFile},
+
+	{"POST", regexp.MustCompile("/(.+)/git-upload-pack$"), serviceUpload},
+	{"POST", regexp.MustCompile("/(.+)/git-receive-pack$"), serviceReceive},
+}
+
 func serveRoot(w http.ResponseWriter, r *http.Request) {
 	log.Print(r.URL.Path)
-
-	services := []Service{
-		{"GET", regexp.MustCompile("/(.+)/HEAD$"), getHead},
-		{"GET", regexp.MustCompile("/(.+)/info/refs$"), getInfoRefs},
-		{"GET", regexp.MustCompile("/(.+)/objects/info/alternates$"), getTextFile},
-		{"GET", regexp.MustCompile("/(.+)/objects/info/http-alternates$"), getTextFile},
-		{"GET", regexp.MustCompile("/(.+)/objects/info/packs$"), getInfoPacks},
-		{"GET", regexp.MustCompile("/(.+)/objects/[0-9a-f]{2}/[0-9a-f]{38}$"), getLooseObject},
-		{"GET", regexp.MustCompile("/(.+)/objects/pack/pack-[0-9a-f]{40}\\.pack$"), getPackFile},
-		{"GET", regexp.MustCompile("/(.+)/objects/pack/pack-[0-9a-f]{40}\\.idx$"), getIdxFile},
-
-		{"POST", regexp.MustCompile("/(.+)/git-upload-pack$"), serviceUpload},
-		{"POST", regexp.MustCompile("/(.+)/git-receive-pack$"), serviceReceive},
-	}
-
 	for _, s := range services {
 		m := s.pathPattern.FindStringSubmatch(r.URL.Path)
 		if m == nil {
